@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "dgSpecHash": "69UqFwByUGGZ0X/13bcE/d+CZHo/RBmTAkw9+MHS9u8L43YmCj/AH9e12o0LhH2/QEmy7soiWcxpo039mAwCUQ==",
+  "success": true,
+  "projectFilePath": "D:\\study\\distProgramming\\RankCalculator\\RankCalculator\\RankCalculator.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Egor\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\8.0.0\\microsoft.extensions.caching.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\Egor\\.nuget\\packages\\microsoft.extensions.caching.stackexchangeredis\\8.0.4\\microsoft.extensions.caching.stackexchangeredis.8.0.4.nupkg.sha512",
+    "C:\\Users\\Egor\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.1\\microsoft.extensions.dependencyinjection.abstractions.8.0.1.nupkg.sha512",
+    "C:\\Users\\Egor\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.1\\microsoft.extensions.logging.abstractions.8.0.1.nupkg.sha512",
+    "C:\\Users\\Egor\\.nuget\\packages\\microsoft.extensions.options\\8.0.2\\microsoft.extensions.options.8.0.2.nupkg.sha512",
+    "C:\\Users\\Egor\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "C:\\Users\\Egor\\.nuget\\packages\\nats.client\\1.1.4\\nats.client.1.1.4.nupkg.sha512",
+    "C:\\Users\\Egor\\.nuget\\packages\\pipelines.sockets.unofficial\\2.2.8\\pipelines.sockets.unofficial.2.2.8.nupkg.sha512",
+    "C:\\Users\\Egor\\.nuget\\packages\\stackexchange.redis\\2.7.33\\stackexchange.redis.2.7.33.nupkg.sha512",
+    "C:\\Users\\Egor\\.nuget\\packages\\system.io.pipelines\\5.0.1\\system.io.pipelines.5.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

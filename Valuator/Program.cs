@@ -6,8 +6,16 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
+        // Add services to the container.        
+
         builder.Services.AddRazorPages();
+
+        builder.Services.AddStackExchangeRedisCache(redisOptions =>
+        {
+            redisOptions.Configuration = $"{RedisService.SERVER}:{RedisService.PORT}";
+        });
+
+        builder.Services.AddSingleton<IRedisService, RedisService>();
 
         var app = builder.Build();
 

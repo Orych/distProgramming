@@ -1,15 +1,16 @@
-@REM cd ..\RankCalculator\
-@REM start dotnet run
+@echo off
 
-@REM cd ..\nats-server\
-@REM start nats-server.exe
 
-cd ..\Valuator\
-start dotnet run --urls "http://localhost:5001"
-start dotnet run --urls "http://localhost:5002"
+cd "../RankCalculator/RankCalculator"
+start "" dotnet run
 
-cd D:\nginx-1.25.4
-start nginx -c D:\nginx-1.25.4\conf\nginx.conf
+cd "../../Valuator"
 
-@REM cd ..\..\..\..\..\..\nginx-1.25.4
-@REM start nginx -c ..\..\..\..\..\..\nginx-1.25.4\conf\nginx.conf
+start dotnet run --urls "http://0.0.0.0:5001"
+start dotnet run --urls "http://0.0.0.0:5002"
+
+cd "../nats-server"
+start "" "nats-server.exe"
+
+cd "D:\nginx-1.25.4"
+start "" "nginx.exe"
