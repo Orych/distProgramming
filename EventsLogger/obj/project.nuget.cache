@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "mj/0eXFOydf9//VX8I13WP3VRNLENwac2K1RhDYHv2J5G8QfV2/CNyeLkfolYhIHprNoXGpiKN5RklMijDRCmw==",
+  "success": true,
+  "projectFilePath": "D:\\study\\distProgramming\\EventsLogger\\EventsLogger.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Egor\\.nuget\\packages\\nats.client\\1.1.4\\nats.client.1.1.4.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,6 +1,7 @@
 ﻿using NATS.Client;
 using StackExchange.Redis;
 using System.Text;
+using System.Text.Json;
 
 public class Program
 {
@@ -21,7 +22,8 @@ public class Program
 
             await _redisDatabase.StringSetAsync("RANK-" + id, rank.ToString());
 
-            Console.WriteLine($"Обработан текст: {id}, Ранг: {rank}");
+            //Console.WriteLine($"Обработан текст: {id}, Ранг: {rank}");
+            PublishRankCalculatedEvent(id, rank.ToString());
         });
 
         Console.WriteLine("Calculate rank...");
@@ -31,5 +33,12 @@ public class Program
     private static double CalculateRank(string text)
     {
         return (text.Count(symbol => !Char.IsLetter(symbol))) / (double)text.Length;
+    }
+
+    private static void PublishRankCalculatedEvent(string id, string rank)
+    {
+        var message = new { Id = id, Data = rank };
+        string messageJson = JsonSerializer.Serialize(message);
+        _natsConnection.Publish("RankCalculated", Encoding.UTF8.GetBytes(messageJson));
     }
 }

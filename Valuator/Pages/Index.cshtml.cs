@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NATS.Client;
 using System.Text;
+using System.Text.Json;
 
 namespace Valuator.Pages;
 
@@ -31,16 +32,20 @@ public class IndexModel : PageModel
 
         string id = Guid.NewGuid().ToString();
 
+        Options options = ConnectionFactory.GetDefaultOptions();
+        options.Url = "127.0.0.1:4222";
+        IConnection _natsConnection = new ConnectionFactory().CreateConnection(options);
+
         string similarityKey = "SIMILARITY-" + id;
         string similarity = _redis.Gets().Find(key => key.StartsWith("TEXT-") && _redis.Get(key) == text) != null ? "1" : "0";
         _redis.Put(similarityKey, similarity);
 
+        var message = new { Id = id, Data = similarity };
+        string messageJson = JsonSerializer.Serialize(message);
+        _natsConnection.Publish("SimilarityCalculated", Encoding.UTF8.GetBytes(messageJson));
+
         string textKey = "TEXT-" + id;
         _redis.Put(textKey, text);
-
-        Options options = ConnectionFactory.GetDefaultOptions();
-        options.Url = "127.0.0.1:4222";
-        IConnection _natsConnection = new ConnectionFactory().CreateConnection(options);
 
         _natsConnection.Publish("RankCalculator", Encoding.UTF8.GetBytes(id));
 
