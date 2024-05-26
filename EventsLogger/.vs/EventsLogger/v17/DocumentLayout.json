@@ -1,12 +1,41 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\study\\distProgramming\\EventsLogger\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EF629ECB-951C-43CF-9DC7-D4BB2F108256}|EventsLogger.csproj|d:\\study\\distprogramming\\eventslogger\\eventslogger.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{EF629ECB-951C-43CF-9DC7-D4BB2F108256}|EventsLogger.csproj|solutionrelative:eventslogger.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EventsLogger",
+              "DocumentMoniker": "D:\\study\\distProgramming\\EventsLogger\\EventsLogger.csproj",
+              "RelativeDocumentMoniker": "EventsLogger.csproj",
+              "ToolTip": "D:\\study\\distProgramming\\EventsLogger\\EventsLogger.csproj",
+              "RelativeToolTip": "EventsLogger.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-05-19T16:53:20.7Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

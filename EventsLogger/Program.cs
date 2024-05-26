@@ -2,35 +2,47 @@
 using System.Text;
 using System.Text.Json;
 
-public class Dto
+namespace EventsLogger
 {
-    public string Id { get; set; }
-    public string Data { get; set; }
-}
-
-public class Program
-{
-    private static readonly IConnection _natsConnection = new ConnectionFactory().CreateConnection("127.0.0.1:4222");
-    static void Main(string[] args)
+    class TextData
     {
-        _natsConnection.SubscribeAsync("RankCalculated", (sender, args) =>
+        public TextData(string id, double data)
         {
-            var message = JsonSerializer.Deserialize<Dto>(Encoding.UTF8.GetString(args.Message.Data));
-            Console.WriteLine($"RankCalculated \n" +
-                $"\t Id: {message.Id} \n" +
-                $"\t Rank: {message.Data} \n");
-        });
-
-        _natsConnection.SubscribeAsync("SimilarityCalculated", (sender, args) =>
+            this.id = id;
+            this.data = data;
+        }
+        public string id { get; set; }
+        public double data { get; set; }
+    }
+    public class Program
+    {
+        public static void Main(string[] args)
         {
-            var message = JsonSerializer.Deserialize<Dto>(Encoding.UTF8.GetString(args.Message.Data));
-            Console.WriteLine($"SimilarityCalculated \n" +
-                $"\t Id: {message.Id} \n" +
-                $"\t Similarity: {message.Data} \n");
-        });
+            ConnectionFactory cf = new ConnectionFactory();
+            IConnection c = cf.CreateConnection();
 
-        Console.WriteLine("EventLogger working");
-        Console.ReadLine();
+            var rankSubscriber = c.SubscribeAsync("valuator.logs.events.rank", "events_logger", (sender, args) =>
+            {
+                string data = Encoding.UTF8.GetString(args.Message.Data);
+                TextData? info = JsonSerializer.Deserialize<TextData>(data);
+                Console.WriteLine($"1. Rank\n2. RecordId = {info?.id}\n3. {info?.data}");
+                
+            });
+            rankSubscriber.Start();
+
+            var similaritySubcriber = c.SubscribeAsync("valuator.logs.events.similarity", "events_logger", (sender, args) =>
+            {
+                string data = Encoding.UTF8.GetString(args.Message.Data);
+                TextData? info = JsonSerializer.Deserialize<TextData>(data);
+                Console.WriteLine($"1. Similarity\n2. RecordId = {info?.id}\n3. {info?.data}");
+                
+            });
+            similaritySubcriber.Start();
+
+            Console.WriteLine("Press Enter to exit(EventsLogger)");
+            Console.ReadLine();
+
+        }
     }
 
 }
