@@ -63,9 +63,18 @@ public class IndexModel : PageModel
 
         string dbEnvironmentVariable = $"DB_{country}";
 
+        string dbEnvironmentVariableRUS = $"DB_RUS";
+        string dbEnvironmentVariableEU = $"DB_EU";
+        string dbEnvironmentVariableOTHER = $"DB_OTHER";
+
         _db.StringSet(id, country);
 
         string? dbConnection = Environment.GetEnvironmentVariable(dbEnvironmentVariable);
+
+        string? dbConnectionRUS = Environment.GetEnvironmentVariable(dbEnvironmentVariableRUS);
+        string? dbConnectionEU = Environment.GetEnvironmentVariable(dbEnvironmentVariableEU);
+        string? dbConnectionOTHER = Environment.GetEnvironmentVariable(dbEnvironmentVariableOTHER);
+        
 
         if (dbConnection != null) 
         {
@@ -73,7 +82,7 @@ public class IndexModel : PageModel
 
             string similarityKey = "SIMILARITY-" + id;
             //TODO: посчитать similarity и сохранить в БД по ключу similarityKey
-            double similarity = CalculateSimilarity(text, dbConnection);
+            double similarity = CalculateSimilarity(text, dbConnection, dbConnectionRUS, dbConnectionEU, dbConnectionOTHER);
             savingDb?.StringSet(similarityKey, similarity);
             Console.WriteLine($"LOOKUP: {id}, {country}");
 
@@ -117,7 +126,7 @@ public class IndexModel : PageModel
         return Redirect($"index");
     }
 
-    private double CalculateSimilarity(string text, string? dbConnection)
+    private double CalculateSimilarity(string text, string? dbConnection, string? dbConnectionRUS, string? dbConnectionEU, string? dbConnectionOTHER)
     {
         if (dbConnection == null)
         {
@@ -143,5 +152,9 @@ public class IndexModel : PageModel
             }
         }
         return similarity;
+
+        ConfigurationOptions redisConfigurationRUS = ConfigurationOptions.Parse(dbConnectionRUS);
+        ConnectionMultiplexer redisConnectionRUS = ConnectionMultiplexer.Connect(redisConfigurationRUS);
+        IDatabase savingDbRUS = redisConnectionRUS.GetDatabase();
     }
 }
