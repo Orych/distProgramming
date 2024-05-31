@@ -92,10 +92,10 @@ class Program
         int bytesRec = listenerHandler.Receive(buf);
         int y = int.Parse(Encoding.UTF8.GetString(buf, 0, bytesRec));
 
-        //отправляет следующему соседу максимальное значение между X и Y;
         // Вычисляем максимум
         x = int.Max(x, y);
-        // Отправка сообщения следущему 
+
+        // Отправка сообщения следущему макса
         byte[] msg = Encoding.UTF8.GetBytes(x.ToString());
         sender.Connect(senderEP);
         int bytesSent = sender.Send(msg);
