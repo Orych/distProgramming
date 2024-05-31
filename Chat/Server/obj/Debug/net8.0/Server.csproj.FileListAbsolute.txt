@@ -1,0 +1,15 @@
+D:\study\distProgramming\Chat\Server\bin\Debug\net8.0\Server.exe
+D:\study\distProgramming\Chat\Server\bin\Debug\net8.0\Server.deps.json
+D:\study\distProgramming\Chat\Server\bin\Debug\net8.0\Server.runtimeconfig.json
+D:\study\distProgramming\Chat\Server\bin\Debug\net8.0\Server.dll
+D:\study\distProgramming\Chat\Server\bin\Debug\net8.0\Server.pdb
+D:\study\distProgramming\Chat\Server\obj\Debug\net8.0\Server.GeneratedMSBuildEditorConfig.editorconfig
+D:\study\distProgramming\Chat\Server\obj\Debug\net8.0\Server.AssemblyInfoInputs.cache
+D:\study\distProgramming\Chat\Server\obj\Debug\net8.0\Server.AssemblyInfo.cs
+D:\study\distProgramming\Chat\Server\obj\Debug\net8.0\Server.csproj.CoreCompileInputs.cache
+D:\study\distProgramming\Chat\Server\obj\Debug\net8.0\Server.sourcelink.json
+D:\study\distProgramming\Chat\Server\obj\Debug\net8.0\Server.dll
+D:\study\distProgramming\Chat\Server\obj\Debug\net8.0\refint\Server.dll
+D:\study\distProgramming\Chat\Server\obj\Debug\net8.0\Server.pdb
+D:\study\distProgramming\Chat\Server\obj\Debug\net8.0\Server.genruntimeconfig.cache
+D:\study\distProgramming\Chat\Server\obj\Debug\net8.0\ref\Server.dll

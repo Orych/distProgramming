@@ -18,12 +18,12 @@ class Program
             IPEndPoint senderEP = new IPEndPoint(nextIpAddress, nextPort);
             IPEndPoint listenerEP = new IPEndPoint(currIpAddress, listeningPort);
 
-            // CREATE
+            // инициирует сокет для отправки сообщений;
             Socket sender = new Socket(
                 nextIpAddress.AddressFamily,
                 SocketType.Stream,
                 ProtocolType.Tcp);
-
+            // инициирует сокет для входящих сообщений;
             Socket listener = new Socket(
                 currIpAddress.AddressFamily,
                 SocketType.Stream,
@@ -34,21 +34,28 @@ class Program
                 listener.Bind(listenerEP);
                 listener.Listen(10);
 
+                // инициирует переменную X значением из стандартного ввода;
                 int x = int.Parse(Console.ReadLine());
 
+                // отправляет следующему соседу значение X;
                 byte[] msg = Encoding.UTF8.GetBytes(x.ToString());
                 sender.Connect(senderEP);
                 int bytesSent = sender.Send(msg);
 
+                // получает от предыдущего соседа число Y и записывает в переменную X;
                 Socket listenerHandler = listener.Accept();
                 byte[] buf = new byte[1024];
                 int bytesRec = listenerHandler.Receive(buf);
                 x = int.Parse(Encoding.UTF8.GetString(buf, 0, bytesRec));
-                Console.WriteLine(x);
 
+                // отправляет следующему соседу значение X;
                 msg = Encoding.UTF8.GetBytes(x.ToString());
                 bytesSent = sender.Send(msg);
-
+                
+                // получает от предыдущего соседа конечное значение X и выводит его в консоль.
+                Console.WriteLine(x);
+                
+                // Закрываем соединения и освобождаем ресурсы               
                 sender.Shutdown(SocketShutdown.Both);
                 sender.Close();
                 listenerHandler.Shutdown(SocketShutdown.Both);
@@ -84,11 +91,13 @@ class Program
             IPEndPoint senderEP = new IPEndPoint(nextIpAddress, nextPort);
             IPEndPoint listenerEP = new IPEndPoint(currIpAddress, listeningPort);
 
+            // CREATE
             Socket sender = new Socket(
                 nextIpAddress.AddressFamily,
                 SocketType.Stream,
                 ProtocolType.Tcp);
-
+            
+            // инициирует сокет для входящих сообщений;
             Socket listener = new Socket(
                 currIpAddress.AddressFamily,
                 SocketType.Stream,
@@ -96,28 +105,35 @@ class Program
 
             try
             {
+                // Привязываем сокет прослушивания к его конечной точке и уст. режим прослушивания
                 listener.Bind(listenerEP);
                 listener.Listen(10);
 
+                // инициирует переменную X значением из стандартного ввода;
                 int x = int.Parse(Console.ReadLine());
 
+                // получает от предыдущего соседа число Y;
                 Socket listenerHandler = listener.Accept();
                 byte[] buf = new byte[1024];
                 int bytesRec = listenerHandler.Receive(buf);
                 int y = int.Parse(Encoding.UTF8.GetString(buf, 0, bytesRec));
 
+                //отправляет следующему соседу максимальное значение между X и Y;
+                // Вычисляем максимум
                 x = int.Max(x, y);
-
+                // Отправка сообщения следущему 
                 byte[] msg = Encoding.UTF8.GetBytes(x.ToString());
                 sender.Connect(senderEP);
                 int bytesSent = sender.Send(msg);
 
+                // получает от предыдущего соседа конечное значение X и выводит его в консоль.
                 bytesRec = listenerHandler.Receive(buf);
                 x = int.Parse(Encoding.UTF8.GetString(buf, 0, bytesRec));
                 msg = Encoding.UTF8.GetBytes(x.ToString());
                 bytesSent = sender.Send(msg);
                 Console.WriteLine(x);
-
+                
+                // Закрываем соединения и освобождаем ресурсы
                 sender.Shutdown(SocketShutdown.Both);
                 sender.Close();
                 listenerHandler.Shutdown(SocketShutdown.Both);
@@ -144,19 +160,11 @@ class Program
 
     static void Main(string[] args)
     {
-        try
+        if (args.Length > 3 && bool.Parse(args[3]))
         {
-            if (args.Length > 3 && bool.Parse(args[3]))
-            {
-                StartInitChain(int.Parse(args[0]), args[1], int.Parse(args[2]));
-                return;
-            }
-            StartChain(int.Parse(args[0]), args[1], int.Parse(args[2]));
-
+            StartInitChain(int.Parse(args[0]), args[1], int.Parse(args[2]));
+            return;
         }
-        catch (Exception ex)
-        {
-            Console.Write(ex.ToString());
-        }
+        StartChain(int.Parse(args[0]), args[1], int.Parse(args[2]));
     }
 }
