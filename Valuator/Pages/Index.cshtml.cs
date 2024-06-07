@@ -17,13 +17,13 @@ public class IndexModel : PageModel
     
     class TextData
     {
-        public TextData(string id, double data)
+        public TextData(string id, string data)
         {
             this.id = id;
             this.data = data;
         }
         public string id { get; set; }
-        public double data { get; set; }
+        public string data { get; set; }
     }
 
     class IdAndCountryOfText
@@ -63,26 +63,19 @@ public class IndexModel : PageModel
 
         string dbEnvironmentVariable = $"DB_{country}";
 
-        string dbEnvironmentVariableRUS = $"DB_RUS";
-        string dbEnvironmentVariableEU = $"DB_EU";
-        string dbEnvironmentVariableOTHER = $"DB_OTHER";
-
         _db.StringSet(id, country);
 
         string? dbConnection = Environment.GetEnvironmentVariable(dbEnvironmentVariable);
 
-        string? dbConnectionRUS = Environment.GetEnvironmentVariable(dbEnvironmentVariableRUS);
-        string? dbConnectionEU = Environment.GetEnvironmentVariable(dbEnvironmentVariableEU);
-        string? dbConnectionOTHER = Environment.GetEnvironmentVariable(dbEnvironmentVariableOTHER);
-        
-
         if (dbConnection != null) 
         {
-            IDatabase savingDb = ConnectionMultiplexer.Connect(ConfigurationOptions.Parse(dbConnection)).GetDatabase();
+            ConfigurationOptions redisConfiguration = ConfigurationOptions.Parse(dbConnection);
+            redisConfiguration.AbortOnConnectFail = false; // Разрешить повторные попытки подключения
+            IDatabase savingDb = ConnectionMultiplexer.Connect(redisConfiguration).GetDatabase();
 
             string similarityKey = "SIMILARITY-" + id;
             //TODO: посчитать similarity и сохранить в БД по ключу similarityKey
-            double similarity = CalculateSimilarity(text, dbConnection, dbConnectionRUS, dbConnectionEU, dbConnectionOTHER);
+            var similarity = CalculateSimilarity(text);
             savingDb?.StringSet(similarityKey, similarity);
             Console.WriteLine($"LOOKUP: {id}, {country}");
 
@@ -126,35 +119,25 @@ public class IndexModel : PageModel
         return Redirect($"index");
     }
 
-    private double CalculateSimilarity(string text, string? dbConnection, string? dbConnectionRUS, string? dbConnectionEU, string? dbConnectionOTHER)
+    private static string CalculateSimilarity(string text)
     {
-        if (dbConnection == null)
-        {
-            return 0.0;
-        }
+        var a = Environment.GetEnvironmentVariables();
+        string similarity = "";
 
-        ConfigurationOptions redisConfiguration = ConfigurationOptions.Parse(dbConnection);
-        ConnectionMultiplexer redisConnection = ConnectionMultiplexer.Connect(redisConfiguration);
-        IDatabase savingDb = redisConnection.GetDatabase();
-
-        var allKeys = redisConnection.GetServer(dbConnection).Keys();
-        double similarity = 0.0;
-        foreach (var key in allKeys)
+        foreach (var key in a.Keys ) 
         {
-            if (key.ToString().Substring(0, 4) != "TEXT")
+            if (key.ToString().StartsWith("DB_"))
             {
-                continue;
-            }
-            string? dbText = savingDb?.StringGet(key);
-            if (dbText == text)
-            {
-                similarity = 1.0;
+                ConfigurationOptions redisConfiguration = ConfigurationOptions.Parse(a[key].ToString());
+                IConnectionMultiplexer redisDB = ConnectionMultiplexer.Connect(redisConfiguration);
+
+                similarity = redisDB.GetServer(a[key].ToString()).Keys().Select(x => x.ToString())
+                    .ToList().Find(key => key.StartsWith("TEXT-") && redisDB.GetDatabase().StringGet(key) == text) != null ? "1" : "0";
+                if (similarity == "1")
+                    break;
             }
         }
         return similarity;
-
-        ConfigurationOptions redisConfigurationRUS = ConfigurationOptions.Parse(dbConnectionRUS);
-        ConnectionMultiplexer redisConnectionRUS = ConnectionMultiplexer.Connect(redisConfigurationRUS);
-        IDatabase savingDbRUS = redisConnectionRUS.GetDatabase();
     }
+   
 }
