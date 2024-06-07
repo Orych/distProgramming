@@ -10,9 +10,10 @@ class Program
 {
     public static void StartListening(int port)
     {
-        // Привязываем сокет ко всем интерфейсам на текущей машинe
+        // Привязываем сокет ко всем сетевым интерфейсам на текущей машине
         IPAddress ipAddress = IPAddress.Any;
 
+        //представляет конечную точку сети (IP-адрес и порт)
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
 
         // CREATE
@@ -21,56 +22,53 @@ class Program
             SocketType.Stream,
             ProtocolType.Tcp);
 
-        try
+        // связывания сокета с локальной конечной точкой
+        listener.Bind(localEndPoint);
+
+        //указывает сокету начать прослушивание входящих подключений
+        listener.Listen(10);
+
+        List<string> history = new List<string>();
+
+        while (true)
         {
-            // BIND
-            listener.Bind(localEndPoint);
+            //блокирует выполнение программы до тех пор, пока не будет получено новое входящее соединение
+            Socket handler = listener.Accept();
 
-            // LISTEN
-            listener.Listen(10);
+            byte[] buf = new byte[1024];
+            string data = null;
 
-            List<string> history = new List<string>();
+            //считывает данные из сокета и сохраняет их в буфере
+            int bytesRec = handler.Receive(buf);
 
-            while (true)
+            //данные из буфера декодируются из массива байтов в строку с использованием UTF-8 кодировки
+            data = Encoding.UTF8.GetString(buf, 0, bytesRec);
+
+            Console.WriteLine("Message received: {0}", data);
+            
+            //добавляется в список history
+            history.Add(data);
+
+            // Создаем объект для объединения всех строк
+            StringBuilder stringBuilder = new StringBuilder();
+
+            // Объединяем все строки в одну
+            foreach (string str in history)
             {
-                // ACCEPT
-                Socket handler = listener.Accept();
-
-                byte[] buf = new byte[1024];
-                string data = null;
-                // RECEIVE
-                int bytesRec = handler.Receive(buf);
-
-                data = Encoding.UTF8.GetString(buf, 0, bytesRec);
-
-                Console.WriteLine("Message received: {0}", data);
-                
-                history.Add(data);
-
-                // Создаем объект для объединения всех строк
-                StringBuilder stringBuilder = new StringBuilder();
-
-                // Объединяем все строки в одну
-                foreach (string str in history)
-                {
-                    stringBuilder.AppendLine(str);
-                }
-
-                // Преобразуем объединенную строку в массив байт 
-                // Отправляем текст обратно клиенту
-                byte[] msg = Encoding.UTF8.GetBytes(stringBuilder.ToString());
-
-                // SEND
-                handler.Send(msg);
-
-                // RELEASE
-                handler.Shutdown(SocketShutdown.Both);
-                handler.Close();
+                stringBuilder.AppendLine(str);
             }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.ToString());
+
+            // Преобразуем объединенную строку в массив байт 
+            // Отправляем текст обратно клиенту
+            byte[] msg = Encoding.UTF8.GetBytes(stringBuilder.ToString());
+
+            // отправляет массив байтов обратно клиенту через сокет
+            handler.Send(msg);
+
+            // закрывает соединение для чтения и записи
+            handler.Shutdown(SocketShutdown.Both);
+            //закрывает сокет полностью и освобождает все связанные с ним ресурсы.
+            handler.Close();
         }
     }
 

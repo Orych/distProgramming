@@ -12,8 +12,10 @@ class Program
         try
         {
             // Разрешение сетевых имён
+            //"localhost" то используется локальный адрес 
             IPAddress ipAddress = (hostaddress == "localhost") ? IPAddress.Loopback : IPAddress.Parse(hostaddress);
 
+            //объект представляющий точку к которой будет осуществлено подключение.
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
 
             // CREATE
@@ -22,37 +24,25 @@ class Program
                 SocketType.Stream,
                 ProtocolType.Tcp);
 
-            try
-            {
-                // CONNECT
-                sender.Connect(remoteEP);
+            //Устанавливается соединение с удаленной конечной точкой
+            sender.Connect(remoteEP);
 
-                // SEND
-                int bytesSent = sender.Send(Encoding.UTF8.GetBytes(msg));
+            //Отправляется сообщение на сервер в виде массива байтов, закодированного в UTF-8.
+            int bytesSent = sender.Send(Encoding.UTF8.GetBytes(msg));
 
-                // RECEIVE
-                byte[] buf = new byte[1024];
-                int bytesRec = sender.Receive(buf);
+            //Происходит прием данных от сервера в буфер размером 1024 байта.
+            byte[] buf = new byte[1024];
+            int bytesRec = sender.Receive(buf);
 
-                Console.WriteLine("{0}",
-                    Encoding.UTF8.GetString(buf, 0, bytesRec));
+            //данные декодируются из массива байтов в строку с использованием UTF-8 
+            Console.WriteLine("{0}",
+                Encoding.UTF8.GetString(buf, 0, bytesRec));
 
-                // RELEASE
-                sender.Shutdown(SocketShutdown.Both);
-                sender.Close();
-            }
-            catch (ArgumentNullException ane)
-            {
-                Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
-            }
-            catch (SocketException se)
-            {
-                Console.WriteLine("SocketException : {0}", se.ToString());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Unexpected exception : {0}", e.ToString());
-            }
+            //сокет закрывается для чтения и записи
+            sender.Shutdown(SocketShutdown.Both);
+            //закрывается и освобождаются связанные с ним ресурсы.
+            sender.Close();
+            
         }
         catch (Exception e)
         {
